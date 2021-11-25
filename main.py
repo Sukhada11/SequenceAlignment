@@ -73,11 +73,11 @@ class Solution:
          W = ""
 
          if len(x) == 0:
-             for i in range(1,len(y)):
+             for i in range(0,len(y)):
                  Z = Z + '_'
                  W = W + y[i]
          elif len(y) == 0:
-            for i in range(1,len(x)):
+            for i in range(0,len(x)):
                  Z = Z + x[i]
                  W = W + '_'
 
@@ -85,7 +85,7 @@ class Solution:
             Z, W = self.basicSolver(x,y)
          else:
             xmid = len(x) // 2
-            scoreL = self.getLastCol(x[:xmid-1],y)
+            scoreL = self.getLastCol(x[:xmid],y)
             scoreR = self.getLastCol(x[xmid:][::-1],y[::-1])
             scoreR = scoreR[::-1]
             #print(len(scoreR),len(scoreL))
@@ -96,7 +96,7 @@ class Solution:
             index_max = temp.index(max_val)
             ymid = index_max
 
-            Z1,W1  = self.advancedSolver(x[:xmid-1],y[:ymid-1])
+            Z1,W1  = self.advancedSolver(x[:xmid],y[:ymid])
             Z2,W2 = self.advancedSolver(x[xmid:],y[ymid:])
             Z=Z1+Z2
             W=W1+W2
