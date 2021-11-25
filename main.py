@@ -64,14 +64,14 @@ class Solution:
                     dp[i - 1][j - 1] +self.alpha["{}_{}".format(x[i-1],y[j-1])])
         return dp
 
-    def getLastCol(self,dp):
-
+    def getLastCol(self,x,y):
+        dp = self.matrixGenertaor(x, y)
         res = [row[-1] for row in dp]
         return res
     def advancedSolver(self,x,y):
-
          Z = ""
          W = ""
+
          if len(x) == 0:
              for i in range(1,len(y)):
                  Z = Z + '_'
@@ -84,11 +84,11 @@ class Solution:
          elif len(x) == 1 or len(y) == 1:
             (Z, W) = self.basicSolver(x,y)
          else:
-            xmid = len(x) / 2
-
-            scoreL = self.getLastCol(x[:xmid],y)
-            scoreR = self.getLastCol(x[xmid+1:][::-1],y[::-1])
+            xmid = len(x) // 2
+            scoreL = self.getLastCol(x[:xmid-1],y)
+            scoreR = self.getLastCol((x[xmid:])[::-1],(y)[::-1])
             scoreR = scoreR[::-1]
+            print(len(scoreR),len(scoreL))
             temp=[]
             for i in range(len(scoreL)):
                 temp.append(scoreR[i]+scoreL[i])
@@ -96,7 +96,8 @@ class Solution:
             index_max = temp.index(max_val)
             ymid = index_max
 
-            (Z, W) = self.advancedSolver(x[:xmid],y[:ymid]) + self.advancedSolver(x[xmid+1:],y[ymid+1:])
+            Z  = self.advancedSolver(x[:xmid-1],y[:ymid-1])
+            W = self.advancedSolver(x[xmid:],y[ymid:])
          return (Z, W)
 
 
@@ -161,7 +162,7 @@ class Solution:
         a=("".join(xalligned[id:]))
         b=("".join(yalligned[id:]))
         print(dp[-1][-1])
-        print(a,b)
+        return (a,b)
 
 begin_time = datetime.datetime.now()
 obj = Solution("ip.txt")
@@ -169,6 +170,8 @@ x=(obj.readFile())
 str1,d1 = obj.inputStringGenerator(x[0])
 str2,d2 = obj.inputStringGenerator(x[1])
 print(str1,str2)
-table = obj.matrixGenertaor(str1,str2)
-obj.getLastCol(table,0,0)
+a,b = obj.basicSolver(str1,str2)
+c,d = obj.advancedSolver(str1,str2)
+print(a,b)
+print(c,d)
 print(datetime.datetime.now() - begin_time)
