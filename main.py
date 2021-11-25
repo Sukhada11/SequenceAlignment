@@ -82,13 +82,13 @@ class Solution:
                  W = W + '_'
 
          elif len(x) == 1 or len(y) == 1:
-            (Z, W) = self.basicSolver(x,y)
+            Z, W = self.basicSolver(x,y)
          else:
             xmid = len(x) // 2
             scoreL = self.getLastCol(x[:xmid-1],y)
-            scoreR = self.getLastCol((x[xmid:])[::-1],(y)[::-1])
+            scoreR = self.getLastCol(x[xmid:][::-1],y[::-1])
             scoreR = scoreR[::-1]
-            print(len(scoreR),len(scoreL))
+            #print(len(scoreR),len(scoreL))
             temp=[]
             for i in range(len(scoreL)):
                 temp.append(scoreR[i]+scoreL[i])
@@ -96,9 +96,11 @@ class Solution:
             index_max = temp.index(max_val)
             ymid = index_max
 
-            Z  = self.advancedSolver(x[:xmid-1],y[:ymid-1])
-            W = self.advancedSolver(x[xmid:],y[ymid:])
-         return (Z, W)
+            Z1,W1  = self.advancedSolver(x[:xmid-1],y[:ymid-1])
+            Z2,W2 = self.advancedSolver(x[xmid:],y[ymid:])
+            Z=Z1+Z2
+            W=W1+W2
+         return Z,W
 
 
     def basicSolver(self,x,y):
@@ -162,7 +164,7 @@ class Solution:
         a=("".join(xalligned[id:]))
         b=("".join(yalligned[id:]))
         print(dp[-1][-1])
-        return (a,b)
+        return a,b
 
 begin_time = datetime.datetime.now()
 obj = Solution("ip.txt")
