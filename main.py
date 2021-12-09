@@ -2,6 +2,11 @@ import datetime
 class Solution:
     def __init__(self,fileName):
         self.file=fileName
+
+    def readFile(self):
+        f = open(self.file)
+        lines = f.read().splitlines()
+        str_idxs=[]
         self.delta =30
         self.alpha={
             "{}_{}".format("A", "A"): 0,
@@ -9,7 +14,7 @@ class Solution:
             "{}_{}".format("A", "G"): 48,
             "{}_{}".format("A", "T"): 94,
             "{}_{}".format("C", "C"): 0,
-             "{}_{}".format("C","A"):110,
+            "{}_{}".format("C","A"):110,
             "{}_{}".format("C", "G"): 118,
             "{}_{}".format("C", "T"): 48,
             "{}_{}".format("G", "G"): 0,
@@ -20,13 +25,6 @@ class Solution:
             "{}_{}".format("T", "A"): 94,
             "{}_{}".format("T", "C"): 48,
             "{}_{}".format("T", "G"): 110}
-
-
-
-    def readFile(self):
-        f = open(self.file)
-        lines = f.read().splitlines()
-        str_idxs=[]
         for i,line in enumerate(lines):
             if line.isalpha():
                 str_idxs.append(i)
@@ -64,43 +62,48 @@ class Solution:
                     dp[i - 1][j - 1] +self.alpha["{}_{}".format(x[i-1],y[j-1])])
         return dp
 
-    def getLastCol(self,x,y):
-        dp = self.matrixGenertaor(x, y)
-        res = [row[-1] for row in dp]
-        return res
+    def get_y_mid(self,scoreL, scoreR):
+        max_index = 0
+        max_score = float('Inf')
+        for i, (l, r) in enumerate(zip(scoreL, scoreR[::-1])):
+            if sum([l, r]) < max_score:
+                max_score = sum([l, r])
+                max_index = i
+        return max_index
+
+    # gets the last line of the Needleman-Wunsch matrix
+    def NWScore(self, seq1, seq2):
+        len1 = len(seq1) + 1
+        len2 = len(seq2) + 1
+        last_line = [0] * (len2)
+        current_line = [0] * (len2)
+        dp = self.matrixGenertaor(seq1,seq2)
+        return dp[-1][:]
+        
     def advancedSolver(self,x,y):
-         Z = ""
-         W = ""
+        len1 = len(x)
+        len2 = len(y)
 
-         if len(x) == 0:
-             for i in range(0,len(y)):
-                 Z = Z + '_'
-                 W = W + y[i]
-         elif len(y) == 0:
-            for i in range(0,len(x)):
-                 Z = Z + x[i]
-                 W = W + '_'
+        if len(x) == 0:
+            aligned_seq2 = '-' * len2
+            aligned_seq1 = y
+        elif len(y) == 0:
+            aligned_seq2 = x
+            aligned_seq1 = '-' * len1
+        elif len1 == 1 or len2 == 1:
+            aligned_seq1, aligned_seq2 = self.basicSolver( x, y)
+        else:
 
-         elif len(x) == 1 or len(y) == 1:
-            Z, W = self.basicSolver(x,y)
-         else:
-            xmid = len(x) // 2
-            scoreL = self.getLastCol(x[:xmid],y)
-            scoreR = self.getLastCol(x[xmid:][::-1],y[::-1])
-            scoreR = scoreR[::-1]
-            #print(len(scoreR),len(scoreL))
-            temp=[]
-            for i in range(len(scoreL)):
-                temp.append(scoreR[i]+scoreL[i])
-            max_val = max(temp)
-            index_max = temp.index(max_val)
-            ymid = index_max
+            xmid = len1 // 2
+            scoreL = self.NWScore( x[:xmid], y)
+            scoreR = self.NWScore( x[xmid:][::-1], y[::-1])
+            ymid = self.get_y_mid(scoreL, scoreR)
+            rowLeft, columnUp = self.advancedSolver( x[:xmid], y[:ymid])
+            rowRight, columnDown = self.advancedSolver( x[xmid:], y[ymid:])
+            aligned_seq1 = rowLeft + rowRight
+            aligned_seq2 = columnUp + columnDown
 
-            Z1,W1  = self.advancedSolver(x[:xmid],y[:ymid])
-            Z2,W2 = self.advancedSolver(x[xmid:],y[ymid:])
-            Z=Z1+Z2
-            W=W1+W2
-         return Z,W
+        return aligned_seq1, aligned_seq2
 
 
     def basicSolver(self,x,y):
@@ -142,7 +145,7 @@ class Solution:
                 xptr -= 1
                 yptr -= 1
                 j -= 1
-        print(i,j)
+
         while (xptr > 0):
             if (i > 0):
                 i-=1
