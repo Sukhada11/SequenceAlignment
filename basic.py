@@ -1,5 +1,6 @@
 import time
 import tracemalloc
+import sys
 align1 = ""
 align2 = ""
 cost = 0.0
@@ -188,7 +189,7 @@ class Solution:
         return a, b, dp[-1][-1]
 
 
-obj = Solution("ip.txt")
+obj = Solution(sys.argv[1])
 x = (obj.readFile())
 str1, d1 = obj.inputStringGenerator(x[0])
 str2, d2 = obj.inputStringGenerator(x[1])
