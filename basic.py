@@ -203,5 +203,5 @@ z = peak / 10**3
 w = (t1-t0) / 10**3
 tracemalloc.stop()
 f = open("output.txt", "w")
-f.write(a[:50]+" "+a[-50:]+'\n'+b[:50]+" "+b[-50:]+'\n'+str(w)+'\n'+str(z))
+f.write(a[:50]+" "+a[-50:]+'\n'+b[:50]+" "+b[-50:]+'\n'+str(cost)+'\n'++str(w)+'\n'+str(z))
 f.close()
