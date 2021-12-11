@@ -1,2 +1,2 @@
 #!/bin/bash
-python basic.py --input.txt
+python3 basic.py input.txt
