@@ -203,6 +203,7 @@ t1 = time.time()
 current, peak = tracemalloc.get_traced_memory()
 z = peak / 10**3
 w = (t1-t0)/ 10**3
+w = format(w, '.8f')
 tracemalloc.stop()
 f = open("output.txt", "w")
 f.write(align1[:50]+" "+align1[-50:]+'\n'+align2[:50]+" "+align2[-50:]+'\n'+str(cost)+'\n'+str(w)+'\n'+str(z))
